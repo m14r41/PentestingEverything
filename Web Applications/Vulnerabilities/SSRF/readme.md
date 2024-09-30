@@ -1,0 +1,28 @@
+
+
+### **Server-Side Request Forgery (SSRF)**
+
+| **Aspect**                   | **Details**                                                                                                                                           |
+|------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Description**              | Server-Side Request Forgery (SSRF) is a type of vulnerability that allows an attacker to trick a vulnerable web application into making requests to unintended locations. This can enable the attacker to access sensitive internal resources, like databases or metadata services, that are normally not accessible from the outside. Essentially, the attacker sends a request to the application, which then acts on that request, potentially revealing confidential information or performing unauthorized actions. |
+| **Conditions to be Vulnerable** | - The application accepts URLs or IP addresses from user input without properly checking or filtering them. <br> - The server running the application has access to internal services or resources that should not be exposed to external users. |
+| **Where to Find**            | - APIs that allow users to fetch external data by providing a URL. <br> - Applications that let users define webhook URLs without restrictions. |
+| **Common Exploits**          | - Accessing sensitive internal resources, such as `http://localhost/admin` or `http://127.0.0.1:8080`, which may expose private data. <br> - Fetching information from cloud metadata services (e.g., `http://169.254.169.254`), which can contain credentials or configuration details. |
+| **Exploitation Conditions**   | - The server has access to internal resources that attackers want to exploit. <br> - There is a lack of input validation that would prevent unauthorized requests. |
+| **Example**                  | An attacker might submit `http://localhost/admin` in a URL input field of a web application. If the application doesn’t properly validate the input, it will make a request to its own server, allowing the attacker to access the internal admin panel. |
+| **Mitigation**               | - Always validate and sanitize user input to ensure only allowed URLs can be requested. <br> - Implement a whitelist of acceptable domains or endpoints. <br> - Use network segmentation to limit server access to sensitive internal resources. |
+| **Common Payloads**          | - `http://localhost/admin` <br> - `http://169.254.169.254/latest/meta-data/` <br> - `http://127.0.0.1:8080` <br> - `http://192.168.1.1/admin` |
+| **Common Bypass Techniques** | 1. **Whitelisted Domains Bypass**: Targeting domains not properly checked by the application. <br> 2. **Protocols**: Exploiting alternate protocols such as `file://` (e.g., `file:///etc/passwd`) or `sftp://` (e.g., `sftp://generic.com`). <br> 3. **Bypass by HTTPS**: Accessing `https://127.0.0.1/` as `https://localhost/` to confuse security measures. <br> 4. **URL Encoding**: Modifying requests using encoded characters (e.g., `http://127.0.0.1/%61dmin`). <br> 5. **Decimal IP**: Representing IP addresses in decimal format (e.g., `192.168.1.1` as `3232235777`). <br> 6. **Octal IP**: Using octal representation of IPs (e.g., `192.168.1.1` as `0300.0250.01`). <br> 7. **DNS Rebinding**: Manipulating DNS records to redirect traffic to internal IPs. <br> 8. **Using Internal Services**: Accessing endpoints that are only available internally (e.g., `http://service.local/admin`). <br> 9. **HTTP Smuggling**: Sending crafted requests to confuse the server into making unauthorized internal requests. <br> 10. **Server Port Scanning**: Using SSRF to discover open ports on the internal network (e.g., `http://127.0.0.1:80`). |
+
+---
+
+
+### Amazing Resources
+
+| **Credit**                                                                                                                         | **URL**                                                                                                                         |
+|-----------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| GitHub - PayloadsAllTheThings - Server Side Request Forgery                                                                          | [https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Server%20Side%20Request%20Forgery/README.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Server%20Side%20Request%20Forgery/README.md)  |
+| HackTricks - Pentesting Web - SSRF: Server Side Request Forgery                                                                       | [https://book.hacktricks.xyz/pentesting-web/ssrf-server-side-request-forgery](https://book.hacktricks.xyz/pentesting-web/ssrf-server-side-request-forgery)  |
+| Medium - SSRF Bypass Techniques: A Comprehensive Guide for Security Researchers                                                      | [https://mufazmi.medium.com/ssrf-bypass-techniques-a-comprehensive-guide-for-security-researchers-10b7f860ead5](https://mufazmi.medium.com/ssrf-bypass-techniques-a-comprehensive-guide-for-security-researchers-10b7f860ead5) |
+| SystemWeakness - SSRF Filter Bypass                                                                                                  | [https://systemweakness.com/ssrf-filter-bypass-5b8671d95565](https://systemweakness.com/ssrf-filter-bypass-5b8671d95565)  |
+
